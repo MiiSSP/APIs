@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { DeleteResult, ILike, Repository } from "typeorm";
 import { Tarefa } from "../entities/tarefa.entity";
 
 @Injectable()
@@ -28,10 +28,45 @@ export class TarefaService
             })
 
             if(!tarefa)
-            throw new HttpException ('Tarefa inexistente!!!', HttpStatus.NOT_FOUND)
+                throw new HttpException ('Tarefa inexistente!!!', HttpStatus.NOT_FOUND)
 
             return tarefa
         }
 
+        async findByNome (nome: string): Promise<Tarefa[]>
+        {
+            return this.tarefaRepository.find
+            ({
+                where:
+                {
+                    nome: ILike (`%${nome}%`)
+                }
+            })
+        }   
+        
+        async create (tarefa: Tarefa): Promise<Tarefa>
+        {
+            return this.tarefaRepository.save(tarefa)
+        }
+
+        async update (tarefa: Tarefa): Promise<Tarefa>
+        {
+            let tarefaUpdate = await this.findById(tarefa.id)
+        
+            if (!tarefa.id)
+                throw new HttpException ('Atenção necessario informar id!!', HttpStatus.NOT_FOUND)
+
+            return this.tarefaRepository.save(tarefa)
+        }
+
+        async delete (id: number): Promise<DeleteResult>
+        {
+            let tarefaDelete = await this.findById(id)
+        
+            if (!tarefaDelete)
+                throw new HttpException ('Id Invalido !! Tarefa inexistente!!!', HttpStatus.NOT_FOUND)
+
+            return this.tarefaRepository.delete(id)
+        }
 }
 
