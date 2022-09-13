@@ -14,7 +14,7 @@ import { TarefaModule } from './tarefa/modules/tarefa.module';
     host: 'localhost',
     port: 3306,
     username: 'root',
-    password: 'Milycat9*',
+    password: 'Root1234',
     database: 'db_todo',
     entities: [Tarefa, Categoria],
     synchronize: true
